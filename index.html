@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 
-<!-- iOS PWA meta -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Block Blast+">
@@ -134,7 +133,6 @@
   #settingsBtn { margin-left: 8px; }
   #hint { margin-top: 6px; font-size: 12px; color: var(--text-muted); }
 
-  /* Cheat panel */
   #cheatPanel {
     position: fixed;
     top: 0;
@@ -192,33 +190,6 @@
   .cheat-toggle input[type="checkbox"] { transform: scale(1.1); }
   #cheatHint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
 
-  #customBuilder {
-    margin-top: 6px;
-    background: #151528;
-    border-radius: 10px;
-    padding: 8px;
-    border: 1px solid #2a2a4a;
-  }
-  #customBuilder h3 { margin: 0 0 6px; font-size: 13px; color: var(--accent-soft); }
-  #customGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 18px);
-    grid-template-rows: repeat(4, 18px);
-    gap: 3px;
-    margin-bottom: 6px;
-  }
-  .custom-cell {
-    width: 18px;
-    height: 18px;
-    border-radius: 4px;
-    background: #101020;
-    border: 1px solid #303050;
-    cursor: pointer;
-  }
-  .custom-cell.active { background: #ffcc33; box-shadow: 0 0 6px rgba(255, 204, 51, 0.7); }
-  #customInfo { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-
-  /* Settings modal */
   #settingsModalBackdrop {
     position: fixed;
     inset: 0;
@@ -242,9 +213,7 @@
   .settings-row { margin-bottom: 10px; font-size: 13px; }
   .settings-row label { display: inline-block; margin-bottom: 4px; }
   #settingsCloseBtn { margin-top: 8px; float: right; padding: 6px 12px; font-size: 12px; }
-  #volumeSlider { width: 100%; }
 
-  /* Unlock modal */
   #unlockModalBackdrop {
     position: fixed;
     inset: 0;
@@ -298,7 +267,6 @@
   <div id="hint">Tap pieces, drag, or use arrows + Enter. Konami code or unlock in Settings for dev tools.</div>
 </div>
 
-<!-- Cheat Panel -->
 <div id="cheatPanel">
   <div id="cheatHeader">
     <h2>Dev Console</h2>
@@ -336,15 +304,6 @@
       <button id="cheatSmallPiecesBtn">Small</button>
       <button id="cheatLargePiecesBtn">Large</button>
     </div>
-
-    <div id="customBuilder">
-      <h3>Custom block (4×4)</h3>
-      <div id="customGrid"></div>
-      <button id="addCustomBlockBtn">Add custom block</button>
-      <div id="customInfo">
-        Click cells to toggle. New shape gets the next ID and appears in the reference page and cheats.
-      </div>
-    </div>
   </div>
 
   <div class="cheat-section">
@@ -373,26 +332,9 @@
   </div>
 </div>
 
-<!-- Settings Modal -->
 <div id="settingsModalBackdrop">
   <div id="settingsModal">
     <h2>Settings</h2>
-
-    <div class="settings-row">
-      <label>
-        <input type="checkbox" id="musicToggle">
-        Music on
-      </label>
-    </div>
-
-    <div class="settings-row">
-      <label for="volumeSlider">Volume</label>
-      <input type="range" id="volumeSlider" min="0" max="100" value="60">
-    </div>
-
-    <div class="settings-row">
-      <button id="openReferenceBtn">Open Block Reference Page</button>
-    </div>
 
     <div class="settings-row">
       <button id="unlockFeaturesBtn">Unlock All Features</button>
@@ -402,7 +344,6 @@
   </div>
 </div>
 
-<!-- Unlock Modal -->
 <div id="unlockModalBackdrop">
   <div id="unlockModal">
     <h3>Unlock All Features</h3>
@@ -416,8 +357,6 @@
     </div>
   </div>
 </div>
-
-<audio id="bgMusic" loop></audio>
 
 <script>
   const BOARD_SIZE = 9;
@@ -494,15 +433,9 @@
   const cheatAlwaysValid = document.getElementById('cheatAlwaysValid');
   const cheatNoGameOver = document.getElementById('cheatNoGameOver');
 
-  const customGridEl = document.getElementById('customGrid');
-  const addCustomBlockBtn = document.getElementById('addCustomBlockBtn');
-
   const settingsModalBackdrop = document.getElementById('settingsModalBackdrop');
   const settingsCloseBtn = document.getElementById('settingsCloseBtn');
-  const musicToggle = document.getElementById('musicToggle');
-  const volumeSlider = document.getElementById('volumeSlider');
-  const openReferenceBtn = document.getElementById('openReferenceBtn');
-  const bgMusic = document.getElementById('bgMusic');
+  const unlockFeaturesBtn = document.getElementById('unlockFeaturesBtn');
 
   const unlockModalBackdrop = document.getElementById('unlockModalBackdrop');
   const unlockPasswordInput = document.getElementById('unlockPassword');
@@ -510,7 +443,6 @@
   const unlockErrorEl = document.getElementById('unlockError');
   const unlockCancelBtn = document.getElementById('unlockCancelBtn');
   const unlockConfirmBtn = document.getElementById('unlockConfirmBtn');
-  const unlockFeaturesBtn = document.getElementById('unlockFeaturesBtn');
 
   const KONAMI = [
     'ArrowUp','ArrowUp','ArrowDown','ArrowDown',
@@ -528,7 +460,7 @@
       const val = parseInt(stored, 10);
       if (!isNaN(val)) highScore = val;
     }
-    highScoreEl.textContent = `High score: ${highScore}`;
+    highScoreEl.textContent = 'High score: ' + highScore;
   }
 
   function saveHighScore() {
@@ -536,18 +468,21 @@
   }
 
   function updateScoreDisplay() {
-    scoreEl.textContent = `Score: ${score}`;
+    scoreEl.textContent = 'Score: ' + score;
     if (score > highScore) {
       highScore = score;
-      highScoreEl.textContent = `High score: ${highScore}`;
+      highScoreEl.textContent = 'High score: ' + highScore;
       saveHighScore();
     }
   }
 
   function initBoard() {
-    board = Array.from({ length: BOARD_SIZE }, () =>
-      Array.from({ length: BOARD_SIZE }, () => 0)
-    );
+    board = [];
+    for (let r = 0; r < BOARD_SIZE; r++) {
+      const row = [];
+      for (let c = 0; c < BOARD_SIZE; c++) row.push(0);
+      board.push(row);
+    }
     boardEl.innerHTML = '';
     for (let r = 0; r < BOARD_SIZE; r++) {
       for (let c = 0; c < BOARD_SIZE; c++) {
@@ -574,7 +509,7 @@
       const val = board[r][c];
       cell.className = 'cell';
       if (val > 0) {
-        cell.classList.add('filled', `color-${(val-1) % COLOR_COUNT}`);
+        cell.classList.add('filled', 'color-' + ((val - 1) % COLOR_COUNT));
       }
     }
   }
@@ -582,7 +517,7 @@
   function randomPiece() {
     const shape = PIECE_SHAPES[Math.floor(Math.random() * PIECE_SHAPES.length)];
     const colorIndex = Math.floor(Math.random() * COLOR_COUNT);
-    return { shape, colorIndex };
+    return { shape: shape, colorIndex: colorIndex };
   }
 
   function generatePieces() {
@@ -598,32 +533,38 @@
 
   function renderPieces() {
     pieceContainerEl.innerHTML = '';
-    pieces.forEach((piece, index) => {
-      if (!piece) return;
-      const { shape, colorIndex } = piece;
-      const rows = shape.map(p => p[0]);
-      const cols = shape.map(p => p[1]);
-      const height = Math.max(...rows) + 1;
-      const width = Math.max(...cols) + 1;
+    for (let index = 0; index < pieces.length; index++) {
+      const piece = pieces[index];
+      if (!piece) continue;
+      const shape = piece.shape;
+      const colorIndex = piece.colorIndex;
+      const rows = shape.map(function(p) { return p[0]; });
+      const cols = shape.map(function(p) { return p[1]; });
+      const height = Math.max.apply(null, rows) + 1;
+      const width = Math.max.apply(null, cols) + 1;
 
       const pieceEl = document.createElement('div');
       pieceEl.className = 'piece';
       if (index === selectedPieceIndex) pieceEl.classList.add('selected');
-      pieceEl.style.gridTemplateRows = `repeat(${height}, 18px)`;
-      pieceEl.style.gridTemplateColumns = `repeat(${width}, 18px)`;
+      pieceEl.style.gridTemplateRows = 'repeat(' + height + ', 18px)';
+      pieceEl.style.gridTemplateColumns = 'repeat(' + width + ', 18px)';
       pieceEl.dataset.index = index;
 
-      const grid = Array.from({ length: height }, () =>
-        Array.from({ length: width }, () => 0)
-      );
-      shape.forEach(([r, c]) => { grid[r][c] = 1; });
+      const grid = [];
+      for (let r = 0; r < height; r++) {
+        const row = [];
+        for (let c = 0; c < width; c++) row.push(0);
+        grid.push(row);
+      }
+      shape.forEach(function(p) {
+        grid[p[0]][p[1]] = 1;
+      });
 
       for (let r = 0; r < height; r++) {
         for (let c = 0; c < width; c++) {
           const cell = document.createElement('div');
           if (grid[r][c] === 1) {
-            cell.className = 'piece-cell';
-            cell.classList.add(`color-${colorIndex}`);
+            cell.className = 'piece-cell color-' + colorIndex;
           } else {
             cell.style.width = '18px';
             cell.style.height = '18px';
@@ -632,7 +573,7 @@
         }
       }
 
-      pieceEl.addEventListener('click', (e) => {
+      pieceEl.addEventListener('click', function(e) {
         if (draggingPieceIndex !== null) return;
         e.stopPropagation();
         if (!pieces[index]) return;
@@ -644,11 +585,11 @@
           clearGhost();
         } else {
           selectedPieceIndex = index;
-          const { shape } = pieces[index];
-          const rows = shape.map(p => p[0]);
-          const cols = shape.map(p => p[1]);
-          const height = Math.max(...rows) + 1;
-          const width = Math.max(...cols) + 1;
+          const shape = pieces[index].shape;
+          const rows = shape.map(function(p) { return p[0]; });
+          const cols = shape.map(function(p) { return p[1]; });
+          const height = Math.max.apply(null, rows) + 1;
+          const width = Math.max.apply(null, cols) + 1;
           ghostBaseRow = Math.floor((BOARD_SIZE - height) / 2);
           ghostBaseCol = Math.floor((BOARD_SIZE - width) / 2);
           ghostFromKeyboard = true;
@@ -657,7 +598,7 @@
         renderPieces();
       });
 
-      pieceEl.addEventListener('mousedown', (e) => {
+      pieceEl.addEventListener('mousedown', function() {
         if (!pieces[index]) return;
         draggingPieceIndex = index;
         selectedPieceIndex = index;
@@ -667,13 +608,15 @@
       });
 
       pieceContainerEl.appendChild(pieceEl);
-    });
+    }
   }
 
   function canPlace(piece, baseRow, baseCol) {
     if (!piece) return false;
-    const { shape } = piece;
-    for (const [dr, dc] of shape) {
+    const shape = piece.shape;
+    for (let i = 0; i < shape.length; i++) {
+      const dr = shape[i][0];
+      const dc = shape[i][1];
       const r = baseRow + dr;
       const c = baseCol + dc;
       if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) return false;
@@ -685,12 +628,15 @@
   function placePiece(pieceIndex, baseRow, baseCol) {
     const piece = pieces[pieceIndex];
     if (!piece) return;
-    const { shape, colorIndex } = piece;
-    shape.forEach(([dr, dc]) => {
+    const shape = piece.shape;
+    const colorIndex = piece.colorIndex;
+    for (let i = 0; i < shape.length; i++) {
+      const dr = shape[i][0];
+      const dc = shape[i][1];
       const r = baseRow + dr;
       const c = baseCol + dc;
       board[r][c] = colorIndex + 1;
-    });
+    }
     renderBoard();
     const cleared = clearLines();
     const placedBlocks = shape.length;
@@ -706,14 +652,18 @@
     renderPieces();
     clearGhost();
     statusEl.textContent = '';
-    if (pieces.every(p => p === null)) generatePieces();
+    if (pieces.every(function(p) { return p === null; })) generatePieces();
     if (!disableGameOver && isGameOver()) statusEl.textContent = 'No more moves. Game over.';
   }
 
   function clearLines() {
     let cleared = 0;
     for (let r = 0; r < BOARD_SIZE; r++) {
-      if (board[r].every(v => v !== 0)) {
+      let full = true;
+      for (let c = 0; c < BOARD_SIZE; c++) {
+        if (board[r][c] === 0) { full = false; break; }
+      }
+      if (full) {
         for (let c = 0; c < BOARD_SIZE; c++) board[r][c] = 0;
         cleared++;
       }
@@ -733,7 +683,7 @@
   }
 
   function getCell(r, c) {
-    return boardEl.querySelector(\`.cell[data-row="\${r}"][data-col="\${c}"]\`);
+    return boardEl.querySelector('.cell[data-row="' + r + '"][data-col="' + c + '"]');
   }
 
   function clearGhost() {
@@ -747,15 +697,17 @@
     clearGhost();
     if (!piece) return;
     const valid = alwaysValidPlacement || canPlace(piece, baseRow, baseCol);
-    const { shape } = piece;
-    shape.forEach(([dr, dc]) => {
+    const shape = piece.shape;
+    for (let i = 0; i < shape.length; i++) {
+      const dr = shape[i][0];
+      const dc = shape[i][1];
       const r = baseRow + dr;
       const c = baseCol + dc;
-      if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) return;
+      if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) continue;
       const cell = getCell(r, c);
-      if (!cell) return;
+      if (!cell) continue;
       cell.classList.add(valid ? 'ghost-valid' : 'ghost-invalid');
-    });
+    }
   }
 
   function handleCellHover(e) {
@@ -805,7 +757,7 @@
   function handleGlobalMouseUp() {
     draggingPieceIndex = null;
     const pieceEls = document.querySelectorAll('.piece.dragging');
-    pieceEls.forEach(el => el.classList.remove('dragging'));
+    pieceEls.forEach(function(el) { el.classList.remove('dragging'); });
     document.removeEventListener('mouseup', handleGlobalMouseUp);
   }
 
@@ -833,14 +785,14 @@
 
   newGameBtn.addEventListener('click', newGame);
 
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', function(e) {
     handleKonami(e);
 
     if (selectedPieceIndex === null) return;
     const piece = pieces[selectedPieceIndex];
     if (!piece) return;
 
-    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Escape'].includes(e.key)) {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Enter' || e.key === 'Escape') {
       e.preventDefault();
     }
 
@@ -862,13 +814,13 @@
       return;
     }
 
-    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
       ghostFromKeyboard = true;
       if (ghostBaseRow === null || ghostBaseCol === null) {
-        const rows = piece.shape.map(p => p[0]);
-        const cols = piece.shape.map(p => p[1]);
-        const height = Math.max(...rows) + 1;
-        const width = Math.max(...cols) + 1;
+        const rows = piece.shape.map(function(p) { return p[0]; });
+        const cols = piece.shape.map(function(p) { return p[1]; });
+        const height = Math.max.apply(null, rows) + 1;
+        const width = Math.max.apply(null, cols) + 1;
         ghostBaseRow = Math.floor((BOARD_SIZE - height) / 2);
         ghostBaseCol = Math.floor((BOARD_SIZE - width) / 2);
       }
@@ -903,8 +855,7 @@
 
   cheatCloseBtn.addEventListener('click', closeCheatPanel);
 
-  // Cheats
-  cheatSetScoreBtn.addEventListener('click', () => {
+  cheatSetScoreBtn.addEventListener('click', function() {
     const val = parseInt(cheatScoreInput.value, 10);
     if (!isNaN(val)) {
       score = val;
@@ -912,19 +863,19 @@
     }
   });
 
-  cheatApplyMultiplierBtn.addEventListener('click', () => {
+  cheatApplyMultiplierBtn.addEventListener('click', function() {
     const val = parseInt(cheatMultiplierInput.value, 10);
     if (!isNaN(val) && val >= 1 && val <= 10) scoreMultiplier = val;
   });
 
-  cheatAdd100.addEventListener('click', () => { score += 100; updateScoreDisplay(); });
-  cheatAdd1000.addEventListener('click', () => { score += 1000; updateScoreDisplay(); });
-  cheatAdd10000.addEventListener('click', () => { score += 10000; updateScoreDisplay(); });
+  cheatAdd100.addEventListener('click', function() { score += 100; updateScoreDisplay(); });
+  cheatAdd1000.addEventListener('click', function() { score += 1000; updateScoreDisplay(); });
+  cheatAdd10000.addEventListener('click', function() { score += 10000; updateScoreDisplay(); });
 
-  cheatSetPiecesBtn.addEventListener('click', () => {
+  cheatSetPiecesBtn.addEventListener('click', function() {
     const text = cheatPiecesInput.value.trim();
     if (!text) return;
-    const parts = text.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n));
+    const parts = text.split(',').map(function(s) { return parseInt(s.trim(), 10); }).filter(function(n) { return !isNaN(n); });
     if (parts.length === 0) return;
     pieces = [null, null, null];
     for (let i = 0; i < Math.min(3, parts.length); i++) {
@@ -945,12 +896,12 @@
     clearGhost();
   });
 
-  cheatRandomPiecesBtn.addEventListener('click', () => {
+  cheatRandomPiecesBtn.addEventListener('click', function() {
     generatePieces();
   });
 
-  cheatSmallPiecesBtn.addEventListener('click', () => {
-    const small = PIECE_SHAPES.map((shape, idx) => ({ shape, idx })).filter(s => s.shape.length <= 3);
+  cheatSmallPiecesBtn.addEventListener('click', function() {
+    const small = PIECE_SHAPES.map(function(shape, idx) { return { shape: shape, idx: idx }; }).filter(function(s) { return s.shape.length <= 3; });
     pieces = [];
     for (let i = 0; i < 3; i++) {
       const pick = small[Math.floor(Math.random() * small.length)];
@@ -961,8 +912,8 @@
     clearGhost();
   });
 
-  cheatLargePiecesBtn.addEventListener('click', () => {
-    const large = PIECE_SHAPES.map((shape, idx) => ({ shape, idx })).filter(s => s.shape.length >= 5);
+  cheatLargePiecesBtn.addEventListener('click', function() {
+    const large = PIECE_SHAPES.map(function(shape, idx) { return { shape: shape, idx: idx }; }).filter(function(s) { return s.shape.length >= 5; });
     pieces = [];
     for (let i = 0; i < 3; i++) {
       const pick = large[Math.floor(Math.random() * large.length)];
@@ -973,104 +924,58 @@
     clearGhost();
   });
 
-  cheatClearBoardBtn.addEventListener('click', () => {
+  cheatClearBoardBtn.addEventListener('click', function() {
     for (let r = 0; r < BOARD_SIZE; r++) {
       for (let c = 0; c < BOARD_SIZE; c++) board[r][c] = 0;
     }
     renderBoard();
   });
 
-  cheatFillBoardBtn.addEventListener('click', () => {
+  cheatFillBoardBtn.addEventListener('click', function() {
     for (let r = 0; r < BOARD_SIZE; r++) {
       for (let c = 0; c < BOARD_SIZE; c++) {
-        board[r][c] = (Math.floor(Math.random() * COLOR_COUNT) + 1);
+        board[r][c] = Math.floor(Math.random() * COLOR_COUNT) + 1;
       }
     }
     renderBoard();
   });
 
-  cheatAlwaysValid.addEventListener('change', () => {
+  cheatAlwaysValid.addEventListener('change', function() {
     alwaysValidPlacement = cheatAlwaysValid.checked;
   });
 
-  cheatNoGameOver.addEventListener('change', () => {
+  cheatNoGameOver.addEventListener('change', function() {
     disableGameOver = cheatNoGameOver.checked;
   });
 
-  // Custom block builder
-  function initCustomGrid() {
-    customGridEl.innerHTML = '';
-    for (let r = 0; r < 4; r++) {
-      for (let c = 0; c < 4; c++) {
-        const cell = document.createElement('div');
-        cell.className = 'custom-cell';
-        cell.dataset.row = r;
-        cell.dataset.col = c;
-        cell.addEventListener('click', () => {
-          cell.classList.toggle('active');
-        });
-        customGridEl.appendChild(cell);
-      }
-    }
-  }
-
-  function normalizeShape(shape) {
-    const rs = shape.map(p => p[0]);
-    const cs = shape.map(p => p[1]);
-    const minR = Math.min(...rs);
-    const minC = Math.min(...cs);
-    return shape
-      .map(([r, c]) => [r - minR, c - minC])
-      .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
-  }
-
-  addCustomBlockBtn.addEventListener('click', () => {
-    const active = [];
-    const cells = customGridEl.querySelectorAll('.custom-cell');
-    cells.forEach(cell => {
-      if (cell.classList.contains('active')) {
-        const r = parseInt(cell.dataset.row, 10);
-        const c = parseInt(cell.dataset.col, 10);
-        active.push([r, c]);
-      }
-    });
-    if (active.length === 0) return;
-    const norm = normalizeShape(active);
-    PIECE_SHAPES.push(norm);
-    cells.forEach(cell => cell.classList.remove('active'));
-    alert(\`Custom block added as shape ID \${PIECE_SHAPES.length - 1}\`);
-  });
-
-  // Settings modal
-  settingsBtn.addEventListener('click', () => {
+  settingsBtn.addEventListener('click', function() {
     settingsModalBackdrop.classList.add('open');
   });
 
-  settingsCloseBtn.addEventListener('click', () => {
+  settingsCloseBtn.addEventListener('click', function() {
     settingsModalBackdrop.classList.remove('open');
   });
 
-  settingsModalBackdrop.addEventListener('click', (e) => {
+  settingsModalBackdrop.addEventListener('click', function(e) {
     if (e.target === settingsModalBackdrop) settingsModalBackdrop.classList.remove('open');
   });
 
-  // Unlock modal
-  unlockFeaturesBtn.addEventListener('click', () => {
+  unlockFeaturesBtn.addEventListener('click', function() {
     unlockPasswordInput.value = '';
     unlockPinInput.value = '';
     unlockErrorEl.textContent = '';
     unlockModalBackdrop.classList.add('open');
   });
 
-  unlockCancelBtn.addEventListener('click', () => {
+  unlockCancelBtn.addEventListener('click', function() {
     unlockModalBackdrop.classList.remove('open');
   });
 
-  unlockModalBackdrop.addEventListener('click', (e) => {
+  unlockModalBackdrop.addEventListener('click', function(e) {
     if (e.target === unlockModalBackdrop) unlockModalBackdrop.classList.remove('open');
   });
 
-  unlockConfirmBtn.addEventListener('click', () => {
+  unlockConfirmBtn.addEventListener('click', function() {
     const pw = unlockPasswordInput.value;
     const pin = unlockPinInput.value;
     if (pw === UNLOCK_PASSWORD && pin === UNLOCK_PIN) {
@@ -1081,110 +986,15 @@
     }
   });
 
-  // Music & volume
-  function applyVolume() {
-    const vol = parseInt(volumeSlider.value, 10) / 100;
-    bgMusic.volume = vol;
-  }
-  volumeSlider.addEventListener('input', applyVolume);
-
-  musicToggle.addEventListener('change', () => {
-    if (musicToggle.checked) {
-      try { bgMusic.play(); } catch (e) {}
-    } else {
-      bgMusic.pause();
-    }
-  });
-
-  // Block reference page
-  function rotate90(shape) {
-    const norm = normalizeShape(shape);
-    const rotated = norm.map(([r, c]) => [c, -r]);
-    return normalizeShape(rotated);
-  }
-
-  function getUniqueOrientations(shape) {
-    const seen = new Set();
-    let current = normalizeShape(shape);
-    const result = [];
-    for (let i = 0; i < 4; i++) {
-      const key = JSON.stringify(current);
-      if (!seen.has(key)) {
-        seen.add(key);
-        result.push(current);
-      }
-      current = rotate90(current);
-    }
-    return result;
-  }
-
-  function openBlockReferencePage() {
-    const win = window.open('', '_blank');
-    if (!win) return;
-    const doc = win.document;
-    doc.open();
-    doc.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>BlockBlast+ Shape Reference</title>');
-    doc.write('<style>');
-    doc.write('body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff;color:#000;margin:16px;}');
-    doc.write('h1{margin-bottom:4px;} h2{margin-top:16px;}');
-    doc.write('.shape-grid{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;}');
-    doc.write('.shape-card{border:1px solid #ccc;border-radius:8px;padding:8px;min-width:120px;}');
-    doc.write('.shape-id{font-weight:bold;margin-bottom:4px;font-size:13px;}');
-    doc.write('.orientations{display:flex;flex-wrap:wrap;gap:6px;}');
-    doc.write('.orient{display:inline-grid;gap:2px;background:#f5f5f5;padding:4px;border-radius:4px;}');
-    doc.write('.cell{width:10px;height:10px;border-radius:2px;background:#ffcc33;}');
-    doc.write('</style></head><body>');
-    doc.write('<h1>BlockBlast+ Shape Reference</h1>');
-    doc.write('<p>Each shape ID corresponds to an entry in the internal shape list. All orientations shown share the same ID.</p>');
-    doc.write('<div class="shape-grid">');
-
-    PIECE_SHAPES.forEach((shape, id) => {
-      const orientations = getUniqueOrientations(shape);
-      doc.write('<div class="shape-card">');
-      doc.write('<div class="shape-id">Shape ID ' + id + '</div>');
-      doc.write('<div class="orientations">');
-      orientations.forEach(orient => {
-        const rows = orient.map(p => p[0]);
-        const cols = orient.map(p => p[1]);
-        const height = Math.max(...rows) + 1;
-        const width = Math.max(...cols) + 1;
-        doc.write('<div class="orient" style="grid-template-rows:repeat(' + height + ',10px);grid-template-columns:repeat(' + width + ',10px);">');
-        const grid = Array.from({ length: height }, () =>
-          Array.from({ length: width }, () => 0)
-        );
-        orient.forEach(([r, c]) => { grid[r][c] = 1; });
-        for (let r = 0; r < height; r++) {
-          for (let c = 0; c < width; c++) {
-            if (grid[r][c] === 1) doc.write('<div class="cell"></div>');
-            else doc.write('<div style="width:10px;height:10px;"></div>');
-          }
-        }
-        doc.write('</div>');
-      });
-      doc.write('</div></div>');
-    });
-
-    doc.write('</div>');
-    doc.write('<p style="margin-top:16px;font-size:12px;">Tip: Use your browser\\\'s Print → "Save as PDF" to export this reference.</p>');
-    doc.write('</body></html>');
-    doc.close();
-  }
-
-  openReferenceBtn.addEventListener('click', openBlockReferencePage);
-
-  // PWA service worker registration
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('service-worker.js').catch(function() {});
     });
   }
 
-  // Start game
   loadHighScore();
   initBoard();
   generatePieces();
-  initCustomGrid();
-  applyVolume();
 </script>
 </body>
 </html>
